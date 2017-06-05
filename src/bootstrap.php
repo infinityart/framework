@@ -33,10 +33,15 @@ if ($env !== 'production') {
 $whoops->register();
 
 /**
+ * Dependency injector
+ */
+$injector = include('dependencies.php');
+
+/**
  * Register http component.
  */
-$request = new HttpRequest($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
-$response = new HttpResponse();
+$request = $injector->make('Http\HttpRequest');
+$response = $injector->make('Http\HttpResponse');
 
 
 /**
@@ -65,7 +70,7 @@ switch ($routeInfo[0]) {
         $method = $routeInfo[1][1];
         $vars = $routeInfo[2];
 
-        $class = new $className($response);
+        $class = $injector->make($className);
         $class->$method($vars);
         break;
 }
