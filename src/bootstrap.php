@@ -6,13 +6,15 @@
 
 namespace Framework;
 
+use Http\HttpRequest;
+use Http\HttpResponse;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 /**
- * Registers The error handler
+ * Registers The error handler.
  */
 error_reporting(E_ALL);
 
@@ -27,3 +29,15 @@ if ($env !== 'production') {
     });
 }
 $whoops->register();
+
+/**
+ * Register http component.
+ */
+$request = new HttpRequest($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
+$response = new HttpResponse();
+
+foreach ($response->getHeaders() as $header) {
+    header($header, false);
+}
+
+echo $response->getContent();
